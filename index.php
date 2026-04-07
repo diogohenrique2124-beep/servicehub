@@ -1,3 +1,8 @@
+<!-- co9nectar o arquivo header.php -->
+<?php  
+include "includes/hader.php";
+include "includes/menu.php";
+?>
 
 <header class="container mt-4">
   <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
@@ -99,3 +104,7 @@
   </div>
 
 </main>
+
+<?php  
+include "includes/footer.php"
+?>
