@@ -1,6 +1,6 @@
-<!-- co9nectar o arquivo header.php -->
+<!-- conectar o arquivo header.php -->
 <?php  
-include "includes/hader.php";
+include "includes/header.php";
 include "includes/menu.php";
 ?>
 
