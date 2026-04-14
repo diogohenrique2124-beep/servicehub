@@ -1,6 +1,7 @@
 <?php 
 
 require_once "config/conexao.php";
+
 ini_set('display_erros', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -11,8 +12,9 @@ error_reporting(E_ALL);
     $descricao = $_POST['txtdescricao'];
     $preco = $_POST['txtpreco'];
 
+    $pdo = obterPdo();
     $sql = "insert servicos (nome, descricao, preco) values(:nome, :descricao, :preco)";
-    $cmd = $pdo->prepare($sql);
+    $cmd = obterPdo()->prepare($sql);
     $cmd->execute([':nome'=>$nome,':descricao'=>$descricao, ':preco'=>$preco]);
     $id = $pdo->lastInsertId();
 
@@ -22,6 +24,14 @@ error_reporting(E_ALL);
             echo "Falha ao cadastro do serviço";
         }
     }
+    $sql = "select * from servicos";
+$cmd = $pdo->prepare($sql);
+$cmd->execute();
+$servicos = $cmd->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
     ?>
 
     <!DOCTYPE html>

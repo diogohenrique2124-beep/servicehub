@@ -1,7 +1,13 @@
 <!-- conectar o arquivo header.php -->
 <?php  
+session_start();
+if(!isset($_SESSION['usuario_id']) || $_SESSION['tipo'] !=1){
+  header("location: login.php");
+  exit;
+}
 include "includes/header.php";
-include "includes/menu.php";
+include "includes/menu.php"
+
 ?>
 
 <main class="container mt-5">
@@ -12,3 +18,7 @@ include "includes/menu.php";
 <a href="admin_servicos.php" class="btn btn-warning">Serviços</a>
 <a href="logout.php" class="btn btn-danger">Sair</a>
 </main>
+
+<?php 
+include "includes/footer.php"
+?>
