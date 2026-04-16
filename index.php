@@ -2,7 +2,7 @@
 require_once "config/conexao.php";
 $pdo = obterPdo();
 
-$cmd = $pdo->prepare("SELECT * FROM servicos WHERE descontinuado=b '0' ");
+$cmd = $pdo->prepare("SELECT * FROM servicos WHERE descontinuado=b'0' ");
 $cmd->execute(); //executar
 $servicos = $cmd->fetchAll(PDO::FETCH_ASSOC); //fetchAll retorna todos, fetch é um por um
 
@@ -20,13 +20,13 @@ include "includes/menu.php";
   <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner rounded shadow">
       <div class="carousel-item active">
-        <img src="assests/img/banner1.jpg" class="d-block w-100 banner-img" alt="Banner 1">
+        <img src="assets/img/banner1.jpg" class="d-block w-100 banner-img" alt="Banner 1">
       </div>
       <div class="carousel-item">
-        <img src="assests/img/banner2.jpg" class="d-block w-100 banner-img" alt="Banner 2">
+        <img src="assets/img/banner2.jpg" class="d-block w-100 banner-img" alt="Banner 2">
       </div>
       <div class="carousel-item">
-        <img src="assests/img/banner3.jpg" class="d-block w-100 banner-img" alt="Banner 3">
+        <img src="assets/img/banner3.jpg" class="d-block w-100 banner-img" alt="Banner 3">
       </div>
     </div>
 
