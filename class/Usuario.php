@@ -88,7 +88,7 @@ class Usuario{
         }
     }
 
-    // inserir
+    // inserir --------------
     public function inserir():bool{
         $sql = "INSERT usuarios (nome, email, senha, tipo) values (:nome, :email, :senha, :tipo)";
         $cmd = $this->pdo->prepare($sql);
@@ -102,13 +102,13 @@ class Usuario{
         }
         return true;
     }
-    //listar
+    //listar -----------------
     public static function listar():array{
         $cmd = obterPdo()->query("select * from usuarios order by id desc");
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    //Buscar por id
+    //Buscar por id ------------------------
     public function buscarPorId(int $id):array{
         $sql = "SELECT * FROM usuarios WHERE id = :id";
         $cmd = obterPdo()->prepare($sql);
@@ -128,7 +128,7 @@ class Usuario{
         return [];
     }
 
-    //Atualizar
+    //Atualizar -------------------
     public function atualizar():bool{
 
         if(!$this->id) return false;
