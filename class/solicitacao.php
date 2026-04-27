@@ -22,10 +22,6 @@ private $pdo;
  public function getId(){
         return $this->id;
     }
-
-    public function setId(string $id){
-        $this->id = $id;
-    }
     public function getClienteId(){
         return $this->cliente_id;
     }
@@ -52,8 +48,8 @@ private $pdo;
         return $this->status;
     }
 
-    public function setStatus(string $status){
-        $this->id = $status;
+    public function setStatus(int $status){
+        $this->status = $status;
     }
     public function getDataCad(){
         return $this->data_cad;
@@ -100,14 +96,9 @@ private $pdo;
         $sql = "INSERT solicitacoes (id, cliente_id, descricao_problema, data_preferida, data_cad, data_atualizacao, data_resposta, resposta_admin, endereco)
          values (:id, :cliente_id, :descricao_problema, :data_preferida, :data_cad, :data_atualizacao, :data_resposta, :resposta_admin, :endereco)";
         $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":id", $this->id);
         $cmd->bindValue(":cliente_id", $this->cliente_id);
         $cmd->bindValue(":descricao_problema", $this->descricao_problema);
         $cmd->bindValue(":data_preferida", $this->data_preferida);
-        $cmd->bindValue(":data_cad", $this->data_cad);
-        $cmd->bindValue(":data_atualizacao", $this->data_atualizacao);
-        $cmd->bindValue(":data_resposta", $this->data_resposta);
-        $cmd->bindValue(":resposta_admin", $this->resposta_admin);
         $cmd->bindValue(":endereco", $this->endereco);
 
         if($cmd->execute()){
@@ -138,7 +129,7 @@ public function buscarPorId(int $id):array{
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
-            $this->setId($dados['id']);
+            $this->id = ($dados['id']);
             $this->setClienteId($dados['cliente_id']);
             $this->setDescricaoProblema($dados['descricao_problema']);
             $this->setDataPreferida($dados['data_preferida']);
@@ -150,6 +141,27 @@ public function buscarPorId(int $id):array{
             $this->getEndereco($dados['endereco']);
         }
         return [];
+    }
+
+    //Responder 
+    public function responder(string $resposta, int $status): bool{
+
+         if(!$this->$resposta) return false;
+        $sql = "UPDATE solicitacoes set resposta = :resposta";
+        $cmd = $this->pdo->prepare($sql);
+        $cmd->bindValue(":resposta", $this->$resposta );
+        return $cmd->execute();
+    }
+
+
+//Atualizar Status-------------------
+     public function atualizarStatus($status):bool{
+
+        if(!$this->status) return false;
+        $sql = "UPDATE solicitacoes set status = :status";
+        $cmd = $this->pdo->prepare($sql);
+        $cmd->bindValue(":status", $this->status);
+        return $cmd->execute();
     }
 
 }
