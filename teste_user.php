@@ -2,7 +2,7 @@
 include_once "class/Cliente.php";
 
 $cliente = new Cliente();
-$cli->buscarPorUsuario(182);
+$cli=$cliente->buscarPorUsuario(1);
 
 print_r($cliente->getTelefone());
 ?>
