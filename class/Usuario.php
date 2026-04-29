@@ -108,8 +108,29 @@ class Usuario{
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    //Buscar por Email ------------------------
+    public function buscarPorEmail(int $email):bool{
+        $sql = "SELECT * FROM usuarios WHERE email = :email";
+        $cmd = obterPdo()->prepare($sql);
+        $cmd->bindValue(":email", $email);
+        $cmd->execute();
+        if($cmd->rowCount() > 0){
+            $dados = $cmd->fetch(PDO::FETCH_ASSOC);
+            var_dump($dados);
+            $this->setId($dados['id']);
+            $this->setNome($dados['nome']);
+            $this->setEmail($dados['email']);
+            $this->setSenha($dados['senha']);
+            $this->setTipo($dados['tipo']);
+            $this->setAtivo($dados['ativo']);
+            $this->primeiro_login = ($dados['primeiro_login']);
+             return true;
+        }
+        return false;
+    }
+
     //Buscar por id ------------------------
-    public function buscarPorId(int $id):array{
+    public function buscarPorId(int $id):bool{
         $sql = "SELECT * FROM usuarios WHERE id = :id";
         $cmd = obterPdo()->prepare($sql);
         $cmd->bindValue(":id", $id);
@@ -124,8 +145,9 @@ class Usuario{
             $this->setTipo($dados['tipo']);
             $this->setAtivo($dados['ativo']);
             $this->primeiro_login = ($dados['primeiro_login']);
+            return true;
         }
-        return [];
+        return false;
     }
 
     //Atualizar -------------------

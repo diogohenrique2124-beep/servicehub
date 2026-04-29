@@ -90,6 +90,11 @@ private $pdo;
     }
 //listar Ativos -------------------
 
+    public static function listarAtivos(): array {
+        $cmd = obterPdo()->query("SELECT * FROM servicos WHERE descontinuado=b'0' ORDER BY id ASC");
+        return $cmd->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
  //Buscar por id ------------------------
 public function buscarPorId(int $id):array{
