@@ -1,21 +1,24 @@
-<!-- conectar o arquivo header.php -->
-<?php  
+<?php
+session_start();  
 include "includes/header.php";
 include "includes/menu.php";
+
 ?>
 
 
 
 <main class="container mt-5">
-  <h3>Solicitação #</h3>
+  <div>
 
-  <p><strong>Status:</strong> </p>
-  <p><strong>Descrição:</strong> </p>
-  <p><strong>Endereço:</strong> </p>
-
+    <h3>Solicitação #</h3>
+    <p><strong>Status:</strong> </p>
+    <p><strong>Descrição:</strong> </p>
+    <p><strong >Endereço:</strong> </p>
+  </div>
+  
  
     <div class="alert alert-info">
-      <strong>Resposta do Admin:</strong><br>
+      <strong >Resposta do Admin:</strong><br>
       
     </div>
  
@@ -24,3 +27,7 @@ include "includes/menu.php";
 
   <a href="cliente_dashboard.php" class="btn btn-secondary">Voltar</a>
 </main>
+
+<?php 
+include "includes/footer.php";
+?>

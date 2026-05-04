@@ -7,7 +7,7 @@ include_once "config/conexao.php";
  
 $id = 22;
 $sql = "select * from servicos where id = :id";
-$cmd = $pdo->prepare($sql,);
+$cmd = obterPdo()->prepare($sql,);
 $cmd->execute([":id"=>$id]);
 $serv = $cmd->fetch(PDO::FETCH_ASSOC);
 if($serv){
@@ -19,12 +19,12 @@ if($serv){
  
  
 $sql = "select * from servicos";
-$cmd = $pdo->prepare($sql);
+$cmd = obterPdo()->prepare($sql);
 $cmd->execute();
 $servicos = $cmd->fetchAll(PDO::FETCH_ASSOC);
  
 $sql = "select * from usuarios";
-$cmd = $pdo->prepare($sql);
+$cmd = obterPdo()->prepare($sql);
 $cmd->execute();
  
 $usuarios = $cmd->fetchAll(PDO::FETCH_ASSOC);

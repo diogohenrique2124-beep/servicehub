@@ -16,11 +16,11 @@ private $pdo;
  public function getId(){
         return $this->id;
     }
-    public function getUsuario_id(){
+    public function getUsuarioId(){
         return $this->usuario_id;
     }
 
-    public function setUsuario_id(string $usuario_id){
+    public function setUsuarioId(string $usuario_id){
         $this->usuario_id = $usuario_id;
     }
     public function getTelefone(){

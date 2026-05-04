@@ -1,7 +1,7 @@
 <?php 
 include_once "config/conexao.php";
 
-class ServicosSolicitacao{
+class ServicoSolicitacao{
 private $servico_id;
 private $solicitacao_id;
 private $data_assoc;
@@ -33,11 +33,11 @@ private $pdo;
 
     //Associar 
 
-     public static function associar(int $servico_id, int $solicitacao_id): bool{
-        $sql = "insert servico_solicitacao values(:servico,:solicitacao_id, default)";
+     public function associar(): bool{
+        $sql = "insert servico_solicitacao values(:servico_id,:solicitacao_id, default)";
         $cmd = obterPdo()-> prepare($sql);
-        $cmd->bindValue(":servico_id", $servico_id);
-        $cmd->bindValue(":solicitacao_id", $solicitacao_id);
+        $cmd->bindValue(":servico_id", $this->servico_id);
+        $cmd->bindValue(":solicitacao_id", $this->solicitacao_id);
         return $cmd->execute();
     }
 

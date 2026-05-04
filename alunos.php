@@ -13,9 +13,9 @@ error_reporting(E_ALL);
     $turma = $_POST['txtturma'];
 
     $sql = "insert servicos (nome, idade, turma) values(:nome, :idade, :turma)";
-    $cmd = $pdo->prepare($sql);
+    $cmd = obterPdo()->prepare($sql);
     $cmd->execute([':nome'=>$nome,':idade'=>$idade, ':turma'=>$turma]);
-    $id = $pdo->lastInsertId();
+    $id = obterPdo()->lastInsertId();
     $alunos = $cmd->fetchAll(PDO::FETCH_ASSOC);
 
     if(isset($id)){
