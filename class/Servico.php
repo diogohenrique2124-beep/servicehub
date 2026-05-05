@@ -2,7 +2,7 @@
 include_once "config/conexao.php";
 
 class Servico{
-private $id=0;
+private $id;
 private $nome;
 private $descricao;
 private $preco;
@@ -54,18 +54,18 @@ private $pdo;
 
      // inserir --------------
  public function inserir():bool{
-        $sql = "INSERT servicos (id, nome, descricao, preco, descontinuado) values (:id, :nome, :descricao, :preco, :descontinuado)";
+        $sql = "INSERT servicos (id, nome, descricao, preco, descontinuado) VALUES 
+        (:id, :nome, :descricao, :preco, :b'0')";
         $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":id", $this->id);
         $cmd->bindValue(":nome", $this->nome);
         $cmd->bindValue(":descricao", $this->descricao);
         $cmd->bindValue(":preco", $this->preco);
-        $cmd->bindValue(":descontinuado", $this->descontinuado);
+
         if($cmd->execute()){
             $this->id = $this->pdo->lastInsertId();
             return true;
         }
-        return true;
+        return false;
     }
 
       //Atualizar -------------------
@@ -74,48 +74,55 @@ private $pdo;
         if(!$this->id) return false;
         // var_dump($this->id);
         // die();
-        $sql = "UPDATE servicos set id = :id, nome= :nome, descricao = :descricao, preco = :preco, descontinuado = :descontinuado";
+        $sql = "UPDATE servicos SET id = :id, nome= :nome, descricao = :descricao, preco = 
+        :preco, descontinuado = :descontinuado";
         $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":id", $this->id );
+        $cmd->bindValue(":id", $this->id , PDO::PARAM_INT);
         $cmd->bindValue(":nome", $this->nome );
         $cmd->bindValue(":descricao", $this->descricao );
         $cmd->bindValue(":preco", $this->preco );
-         $cmd->bindValue(":descontinuado", $this->descontinuado );
         return $cmd->execute();
     }
  //listar -----------------
  public static function listar():array{
-        $cmd = obterPdo()->query("select * from servicos order by id desc");
+        $cmd = obterPdo()->query("SELECT * FROM servicos ORDER BY id DESC");
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 //listar Ativos -------------------
 
     public static function listarAtivos(): array {
-        $cmd = obterPdo()->query("SELECT * FROM servicos WHERE descontinuado=b'0' ORDER BY id ASC");
+        $cmd = obterPdo()->query("SELECT * FROM servicos WHERE descontinuado=b'0' 
+        ORDER BY nome ASC");
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
  //Buscar por id ------------------------
-public function buscarPorId(int $id):array{
+public function buscarPorId(int $id):bool{
         $sql = "SELECT * FROM servicos WHERE id = :id";
         $cmd = obterPdo()->prepare($sql);
-        $cmd->bindValue(":id", $id);
+        $cmd->bindValue(":id", $id, PDO::PARAM_INT);
         $cmd->execute();
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
-            $this->setId($dados['id']);
-            $this->setNome($dados['nome']);
-            $this->setDescricao($dados['descricao']);
-            $this->setPreco($dados['preco']);
-            $this->setDescontinuado($dados['descontinuado']);
+            $this->id = $dados['id'];
+            $this->nome = $dados['nome'];
+            $this->descricao = $dados['descricao'];
+            $this->preco = $dados['preco'];
+            $this->descontinuado = $dados['descontinuado'];
+        return true;
         }
-        return [];
+        return false;
     }
 
 //Excluir
+public static function excluir(int $id): bool {
+        $sql = "UPDATE servicos SET descontinuado=b'1' WHERE id = :id";
+        $cmd = obterPdo()->prepare($sql);
+        $cmd->bindValue(":id", $id, PDO::PARAM_INT);
+        return $cmd->execute();
 
-
+}
 }
  ?>

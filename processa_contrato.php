@@ -92,7 +92,6 @@ try {
     $usuarioBanco = new Usuario();
     if ($usuarioBanco->buscarPorEmail($email)==false){
         // se retornou falso é por que não tem usuário com este email no banco
-        // então gravamos!!!!!!!!!!!!
         $usuario = new Usuario();
         $usuario->setNome($nome);
         $usuario->setEmail($email);

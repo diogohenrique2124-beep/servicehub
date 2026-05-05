@@ -18,7 +18,7 @@ include "includes/menu.php";
   
  
     <div class="alert alert-info">
-      <strong >Resposta do Admin:</strong><br>
+      <strong>Resposta do Admin:</strong><br>
       
     </div>
  
@@ -29,5 +29,5 @@ include "includes/menu.php";
 </main>
 
 <?php 
-include "includes/footer.php";
+include "include/footer.php";
 ?>

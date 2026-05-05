@@ -41,7 +41,7 @@ private $pdo;
  // inserir --------------
  public function inserir():bool{
         $sql = "INSERT clientes (usuario_id, telefone, cpf) 
-        values (:usuario_id, :telefone, :cpf)";
+        VALUES (:usuario_id, :telefone, :cpf)";
         $cmd = $this->pdo->prepare($sql);
         $cmd->bindValue(":usuario_id", $this->usuario_id, PDO::PARAM_INT);
         $cmd->bindValue(":telefone", $this->telefone);
@@ -70,7 +70,7 @@ private $pdo;
     }
  //listar -----------------
  public static function listar():array{
-        $cmd = obterPdo()->query("select * from clientes order by id desc");
+        $cmd = obterPdo()->query("SELECT * FROM clientes ORDER BY id DESC");
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -80,13 +80,13 @@ public function buscarPorId(int $id):bool{
         $cmd = obterPdo()->prepare($sql);
         $cmd->bindValue(":id", $id, PDO::PARAM_INT);
         $cmd->execute();
+
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
-            var_dump($dados);
-            $this->id = ($dados['id']);
-            $this->usuario_id = ($dados['usuario_id']);
-            $this->telefone = ($dados['telefone']);
-            $this->cpf = ($dados['cpf']);
+            $this->id = $dados['id'];
+            $this->usuario_id = $dados['usuario_id'];
+            $this->telefone = $dados['telefone'];
+            $this->cpf = $dados['cpf'];
         return true;
         }
         return false;
@@ -95,17 +95,17 @@ public function buscarPorId(int $id):bool{
        //Buscar por usuario ------------------------
 public function buscarPorUsuario(int $usuario_id): bool {
     
-    $sql = "SELECT * FROM usuarios WHERE usuario_id = :usuario_id LIMIT 1";
+    $sql = "SELECT * FROM clientes WHERE usuario_id = :usuario_id LIMIT 1";
         $cmd = obterPdo()->prepare($sql);
         $cmd->bindValue(":usuario_id", $usuario_id, PDO::PARAM_INT);
         $cmd->execute();
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
-            $this->id = ($dados['id']);
-            $this->usuario_id = ($dados['usuario_id']);
-            $this->telefone = ($dados['telefone']);
-            $this->cpf = ($dados['cpf']);
+            $this->id = $dados['id'];
+            $this->usuario_id = $dados['usuario_id'];
+            $this->telefone = $dados['telefone'];
+            $this->cpf = $dados['cpf'];
             return true;
         }
         return false;

@@ -1,5 +1,6 @@
 <?php 
 include_once "config/conexao.php";
+include_once "class/ServicoSolicitacao.php";
 
 class Solicitacao{
 private $id=0;
@@ -12,6 +13,7 @@ private $data_atualizacao;
 private $data_resposta;
 private $resposta_admin;
 private $endereco;
+public  $servicos = [];
 private $pdo;
 
  public function __construct()
@@ -74,11 +76,11 @@ private $pdo;
         $this->data_resposta = $data_resposta;
     }
 
-        public function getRespostaAdmin(){
+        public function getResposta(){
         return $this->resposta_admin;
     }
     
-    public function setRespostaAdmin(string $resposta_admin){
+    public function setResposta(string $resposta_admin){
         $this->resposta_admin = $resposta_admin;
     }
 
@@ -105,63 +107,94 @@ private $pdo;
             $this->id = $this->pdo->lastInsertId();
             return true;
         }
-        return true;
+        return false;
     }
 
     //listar -----------------
- public static function listar():array{
-        $cmd = obterPdo()->query("select * from solicitacoes order by id desc");
+  public static function listar(): array {
+          $sql = "SELECT s.id, s.status, s.data_cad,
+            u.nome AS cliente_nome,
+            u.email AS cliente_email,
+            GROUP_CONCAT(se.nome SEPARATOR ', ') AS servicos
+    FROM solicitacoes s
+    INNER JOIN clientes c ON c.id = s.cliente_id
+    INNER JOIN usuarios u ON u.id = c.usuario_id
+    INNER JOIN servico_solicitacao ss ON ss.solicitacao_id = s.id
+    INNER JOIN servicos se ON se.id = ss.servico_id
+    GROUP BY s.id, s.status, s.data_cad, u.nome, u.email
+    ORDER BY s.data_cad DESC";
+
+        $cmd = obterPdo()->query($sql);
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     //listar Cliente-----------------
- public static function listarPorCliente(int $cliente_id): array{
-        $cmd = obterPdo()->query("select * from clientes_id order by id desc");
+  public static function listarPorCliente(int $cliente_id): array {
+        $sql = "SELECT * FROM solicitacoes WHERE cliente_id = :cliente_id ORDER BY data_cad DESC";
+        $cmd = obterPdo()->prepare($sql);
+        $cmd->bindValue(":cliente_id", $cliente_id, PDO::PARAM_INT);
+        $cmd->execute();
         return $cmd->fetchAll(PDO::FETCH_ASSOC);
     }
 
 //Buscar por id ------------------------
-public function buscarPorId(int $id):array{
+public function buscarPorId(int $id):bool{
         $sql = "SELECT * FROM solicitacoes WHERE id = :id";
         $cmd = obterPdo()->prepare($sql);
-        $cmd->bindValue(":id", $id);
+        $cmd->bindValue(":id", $id, PDO::PARAM_INT);
         $cmd->execute();
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
             $this->id = ($dados['id']);
-            $this->setClienteId($dados['cliente_id']);
-            $this->setDescricaoProblema($dados['descricao_problema']);
-            $this->setDataPreferida($dados['data_preferida']);
-            $this->setStatus($dados['status']);
-            $this->setDataCad($dados['data_cad']);
-            $this->setDataAtualizacao($dados['data_atualizacao']);
-            $this->setDataResposta($dados['data_resposta']);
-            $this->setRespostaAdmin($dados['resposta_admin']);
-            $this->getEndereco($dados['endereco']);
+            $this->cliente_id = $dados['cliente_id'];
+            $this->descricao_problema = $dados['descricao_problema'];
+            $this->data_preferida = $dados['data_preferida'];
+            $this->status = $dados['status'];
+            $this->data_cad = $dados['data_cad'];
+            $this->data_resposta = $dados['data_resposta'];
+            $this->resposta_admin = $dados['resposta_admin'];
+            $this->endereco = $dados['endereco'];
+            $this->servicos = ServicoSolicitacao::listarServicosDaSolicitacao($dados["id"]);
+        return true;
         }
-        return [];
-    }
+        return false;
+}
 
     //Responder 
     public function responder(string $resposta, int $status): bool{
 
-         if(!$this->$resposta) return false;
-        $sql = "UPDATE solicitacoes set resposta = :resposta";
+         
+        $sql = "UPDATE solicitacoes 
+                SET resposta_admin = :resposta,
+                    status = :status,
+                    data_resposta = NOW(),
+                    data_atualizacao = NOW()
+                WHERE id = :id";
+
         $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":resposta", $this->$resposta );
+        $cmd->bindValue(":resposta", $resposta);
+        $cmd->bindValue(":status", $status, PDO::PARAM_INT);
+        $cmd->bindValue(":id", $this->id, PDO::PARAM_INT);
+
         return $cmd->execute();
     }
 
 
 //Atualizar Status-------------------
-     public function atualizarStatus($status):bool{
+      public function atualizarStatus(int $status): bool {
+        if (!$this->id) return false;
 
-        if(!$this->status) return false;
-        $sql = "UPDATE solicitacoes set status = :status";
+        $sql = "UPDATE solicitacoes 
+                SET status = :status,
+                    data_atualizacao = NOW()
+                WHERE id = :id";
+
         $cmd = $this->pdo->prepare($sql);
-        $cmd->bindValue(":status", $this->status);
+        $cmd->bindValue(":status", $status, PDO::PARAM_INT);
+        $cmd->bindValue(":id", $this->id, PDO::PARAM_INT);
+
         return $cmd->execute();
     }
-
 }

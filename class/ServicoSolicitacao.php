@@ -42,7 +42,7 @@ private $pdo;
     }
 
     //Listar Servicos Da Solicitacao
-     public function listarServicosDaSolicitacao(int $solicitacao_id): array{
+     public static function listarServicosDaSolicitacao(int $solicitacao_id): array{
         $sql = "SELECT se.*, ss.data_assoc
                 FROM servico_solicitacao ss
                 INNER JOIN servicos se ON se.id = ss.servico_id

@@ -4,7 +4,7 @@ include_once "config/conexao.php";
 //declarae a classe
 class Usuario{
     //atributos 
-    private $id=0;
+    private $id;
     private $nome;
     private $email;
     private $senha;
@@ -90,7 +90,8 @@ class Usuario{
 
     // inserir --------------
     public function inserir():bool{
-        $sql = "INSERT usuarios (nome, email, senha, tipo) values (:nome, :email, :senha, :tipo)";
+        $sql = "INSERT usuarios (nome, email, senha, tipo) values 
+        (:nome, :email, :senha, :tipo)";
         $cmd = $this->pdo->prepare($sql);
         $cmd->bindValue(":nome", $this->nome);
         $cmd->bindValue(":email", $this->email);
@@ -100,7 +101,7 @@ class Usuario{
             $this->id = $this->pdo->lastInsertId();
             return true;
         }
-        return true;
+        return false;
     }
     //listar -----------------
     public static function listar():array{
@@ -109,7 +110,7 @@ class Usuario{
     }
 
     //Buscar por Email ------------------------
-    public function buscarPorEmail(int $email):bool{
+    public function buscarPorEmail(string $email):bool{
         $sql = "SELECT * FROM usuarios WHERE email = :email";
         $cmd = obterPdo()->prepare($sql);
         $cmd->bindValue(":email", $email);
@@ -117,13 +118,13 @@ class Usuario{
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
-            $this->setId($dados['id']);
+            $this->id = $dados['id'];
             $this->setNome($dados['nome']);
             $this->setEmail($dados['email']);
             $this->setSenha($dados['senha']);
             $this->setTipo($dados['tipo']);
             $this->setAtivo($dados['ativo']);
-            $this->primeiro_login = ($dados['primeiro_login']);
+            $this->primeiro_login = $dados['primeiro_login'];
              return true;
         }
         return false;
@@ -138,13 +139,13 @@ class Usuario{
         if($cmd->rowCount() > 0){
             $dados = $cmd->fetch(PDO::FETCH_ASSOC);
             var_dump($dados);
-            $this->setId($dados['id']);
+            $this->id = $dados['id'];
             $this->setNome($dados['nome']);
             $this->setEmail($dados['email']);
             $this->setSenha($dados['senha']);
             $this->setTipo($dados['tipo']);
             $this->setAtivo($dados['ativo']);
-            $this->primeiro_login = ($dados['primeiro_login']);
+            $this->primeiro_login = $dados['primeiro_login'];
             return true;
         }
         return false;
@@ -156,7 +157,8 @@ class Usuario{
         if(!$this->id) return false;
         // var_dump($this->id);
         // die();
-        $sql = "UPDATE usuarios set nome = :nome, email= :email, tipo = :tipo, ativo = :ativo, primeiro_login = :primeiro_login WHERE id = :id";
+        $sql = "UPDATE usuarios set nome = :nome, email= :email, tipo = :tipo, ativo = :ativo,
+        primeiro_login = :primeiro_login WHERE id = :id";
         $cmd = $this->pdo->prepare($sql);
         $cmd->bindValue(":id", $this->id );
         $cmd->bindValue(":nome", $this->nome );
@@ -164,6 +166,28 @@ class Usuario{
         $cmd->bindValue(":tipo", $this->tipo );
         $cmd->bindValue(":ativo", $this->ativo, PDO::PARAM_BOOL);
         $cmd->bindValue(":primeiro_login", $this->primeiro_login, PDO::PARAM_BOOL);
+        return $cmd->execute();
+    }
+
+    // Atualizar senha 
+    public function atualizarSenha(string $senhaHash):bool{
+        if(!$this->id) return false;
+
+        $sql = "UPDATE usuarios SET senha = :senha WHERE id = :id";
+        $cmd = $this->pdo->prepare($sql);
+        $cmd->bindValue(":senha", $senhaHash);
+        $cmd->bindValue(":id", $this->id, PDO::PARAM_INT);
+
+        return $cmd->execute();
+    }
+        // Excluir
+    public function excluir():bool{
+        if(!$this->id) return false;
+
+        $sql = "DELETE FROM usuarios WHERE id = :id";
+        $cmd = $this->pdo->prepare($sql);
+        $cmd->bindValue(":id", $this->id, PDO::PARAM_INT);
+
         return $cmd->execute();
     }
 }
